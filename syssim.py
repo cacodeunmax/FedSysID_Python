@@ -20,12 +20,12 @@ def syssim(A, B, T, N, i, sigu, sigw, sigx):
         u = np.zeros((p, T))
         w = np.zeros((n, T))
         z = np.zeros((n + p, T))
-       
+     
         # Initialisation de l'état avec une distribution normale
         x0 = np.random.normal(0, sigx, n)
         list_x0.append(x0)
         x[:, 0] = x0
-       
+    
         for k in range(T):
             # Génération des entrées et bruits
             u[:, k] = np.random.normal(0, sigu, (p,))
@@ -45,6 +45,5 @@ def syssim(A, B, T, N, i, sigu, sigw, sigx):
         X_i[:, j * T:(j + 1) * T] = x
         Z_i[:, j * T:(j + 1) * T] = z
         W_i[:, j * T:(j + 1) * T] = w
- 
-    return X_i, Z_i, W_i, list_x0
 
+    return X_i, Z_i, W_i, list_x0
