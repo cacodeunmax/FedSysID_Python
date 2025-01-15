@@ -9,9 +9,9 @@ def syssim(A, B, T, N, i, sigu, sigw, sigx):
     # u = np.zeros((p, T))
     # w = np.zeros((n, T))
     # z = np.zeros((n + p, T))
-    X_i = np.zeros((n, T * N))
-    Z_i = np.zeros((n + p, T * N))
-    W_i = np.zeros((n, T * N))
+    X = np.zeros((n, T * N))
+    Z = np.zeros((n + p, T * N))
+    W = np.zeros((n, T * N))
     list_x0 = []
 
     for j in range(N):
@@ -42,8 +42,8 @@ def syssim(A, B, T, N, i, sigu, sigw, sigx):
         w = np.fliplr(w)
 
         # Stockage des résultats dans les matrices de sortie
-        X_i[:, j * T:(j + 1) * T] = x
-        Z_i[:, j * T:(j + 1) * T] = z
-        W_i[:, j * T:(j + 1) * T] = w
+        X[:, j * T:(j + 1) * T] = x
+        Z[:, j * T:(j + 1) * T] = z
+        W[:, j * T:(j + 1) * T] = w
 
-    return X_i, Z_i, W_i, list_x0
+    return X, Z, W, list_x0
