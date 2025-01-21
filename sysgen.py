@@ -27,5 +27,16 @@ def generate_A_B(M, epsilon, A0, B0, V, U):
 
 # Juste histoire de reprendre les mêmes notations que le git de l'artcile
 def sysgen(A_0, B_0, V, U, M, epsilon):
-    A, B = generate_A_B(M, epsilon, A_0, B_0, V, U)
+    """
+    Génère les systèmes A et B en fonction des paramètres donnés.
+    Si M est un entier, génère M systèmes.
+    Si M est une liste, utilise la valeur maximale de M pour générer les systèmes.
+    """
+    if isinstance(M, int):  # Si M est un entier
+        A, B = generate_A_B(M, epsilon, A_0, B_0, V, U)
+    elif isinstance(M, list):  # Si M est une liste
+        A, B = generate_A_B(max(M), epsilon, A_0, B_0, V, U)
+    else:
+        raise ValueError("M doit être un entier ou une liste.")
+
     return A, B
