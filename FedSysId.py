@@ -4,6 +4,12 @@ import matplotlib.pyplot as plt
 from sysgen import sysgen
 from sysid import sysid
 
+
+
+# Selecting the FL_solver: Fed_Avg (FL_solver = 0) and Fed_Lin (FL_solver = 1)
+FL_solver = 1
+
+
 # System Data:
 
 # System dimensions
@@ -38,16 +44,27 @@ sigx = 1
 # Rollout length
 T = 5
 
-# Selecting the FL_solver: Fed_Avg (FL_solver = 0) and Fed_Lin (FL_solver = 1)
-FL_solver = 0
+
 
 q = 25  # Number of estimations
 R = 200  # Number of global iterations
 s = 0  # Fixed system for the error computation
 
+
+
+
+
+
+
+
+
+
+
+
+#===================================================================================
 # Simulation 1: varying M
 # M = [1, 2, 5, 25, 100]  # Number of clients
-M = [1,1]
+M = [1, 2, 5, 25, 100]
 N = 25  # Fixed number of rollouts
 epsilon = 0.01  # Fixed dissimilarity
 
@@ -61,19 +78,19 @@ E_avg = np.zeros((len(M), R))
 Error_matrix = np.zeros((q, R))
 
 
-
+Error_matrix_list = []
 for j in range(len(M)):
-    # print(j)
-    # print(M[j])  
     for i in range(q):
-        print("\n")
-        tmp = sysid(A, B, T, N, M[j], R, sigu, sigx, sigw, FL_solver, s, true_theta)
-        print(tmp, "\n")
+        # print("\n")
+        tmp = sysid(A, B, T, N, M[j], R, sigu, sigx, sigw, FL_solver, s)
+        # print(tmp, "\n")
         Error_matrix[i, :] = tmp
+    Error_matrix_list.append(Error_matrix)
     E_avg[j, :] = np.mean(Error_matrix, axis=0)
 
+
 S1 = E_avg
-print(S1.shape)
+# print(Error_matrix_list[2])
 
 
 # Création du graphique
@@ -88,38 +105,94 @@ plt.title("Évolution de l'erreur en fonction des rounds pour différents nombre
 plt.legend(title="Nombre de clients")
 plt.grid(True)
 
-# Sauvegarde de l'image
-plt.savefig("S1_M_variation.png", dpi=300, bbox_inches='tight')
+title_fig = 'S1_M_variation_FedAvg' if FL_solver == 0 else 'S1_M_variation_FedLin'
+
+# Sauvegarde de l'image avec le titre dynamique
+plt.savefig(f"{title_fig}.png", dpi=300, bbox_inches='tight')
 plt.close()  # Ferme la figure pour libérer la mémoire
 
+print(f"S1 finie \n")
+#===================================================================================
 
 
 
-
-
+#===================================================================================
 # # Simulation 2: varying N
-# M = 50  # Fixed number of clients
-# N = [5, 25, 50, 75, 100]  # Number of rollouts
+M = 50  # Fixed number of clients
+N = [5, 25, 50, 75, 100]  # Number of rollouts
 
-# for j, n in enumerate(N):
-#     for i in range(q):
-#         Error_matrix[i, :] = sysid(A, B, T, n, M, R, sigu, sigx, sigw, FL_solver, s)
-#     E_avg[j, :] = np.mean(Error_matrix, axis=0)
+for j in range(len(N)):
+    n = N[j]
+    for i in range(q):
+        Error_matrix[i, :] = sysid(A, B, T, n, M, R, sigu, sigx, sigw, FL_solver, s)
+    E_avg[j, :] = np.mean(Error_matrix, axis=0)
 
-# S2 = E_avg
+S2 = E_avg
 
+# Création du graphique
+plt.figure(figsize=(10, 6))
+for j, n in enumerate(N):
+    plt.plot(range(R), S2[j, :], label=f'N = {n} rollouts')
+
+# Ajout des légendes et des titres
+plt.xlabel('r')  # Nom de l'abscisse
+plt.ylabel('$e_r$')  # Nom de l'ordonnée
+plt.title("Évolution de l'erreur en fonction des rounds pour différents nombres de rollouts")
+plt.legend(title="Nombre de rollouts")
+plt.grid(True)
+
+title_fig = 'S2_N_variation_FedAvg' if FL_solver == 0 else 'S2_N_variation_FedLin'
+
+# Sauvegarde de l'image avec le titre dynamique
+plt.savefig(f"{title_fig}.png", dpi=300, bbox_inches='tight')
+plt.close()  # Ferme la figure pour libérer la mémoire
+
+print(f"S2 finie \n")
+#===================================================================================
+
+
+
+#===================================================================================
 # # Simulation 3: varying epsilon
-# M = 50  # Fixed number of clients
-# N = 25  # Fixed number of rollouts
-# epsilon = [0.01, 0.1, 0.25, 0.5, 0.75]  # Dissimilarity levels
+M = 50  # Fixed number of clients
+N = 25  # Fixed number of rollouts
+epsilon = [0.01, 0.1, 0.25, 0.5, 0.75]  # Dissimilarity levels
 
-# for j, e in enumerate(epsilon):
-#     A, B = sysgen(A_0, B_0, V, U, M, e)
-#     for i in range(q):
-#         Error_matrix[i, :] = sysid(A, B, T, N, M, R, sigu, sigx, sigw, FL_solver, s)
-#     E_avg[j, :] = np.mean(Error_matrix, axis=0)
+for j in range(len(epsilon)):
+    e = epsilon[j]
+    A, B = sysgen(A_0, B_0, V, U, M, e)
+    for i in range(q):
+        Error_matrix[i, :] = sysid(A, B, T, N, M, R, sigu, sigx, sigw, FL_solver, s)
+    E_avg[j, :] = np.mean(Error_matrix, axis=0)
 
-# S3 = E_avg
+S3 = E_avg
+
+
+
+
+# Création du graphique
+plt.figure(figsize=(10, 6))
+for j, e in enumerate(epsilon):
+    plt.plot(range(R), S3[j, :], label=f'ε = {e}')  # Tracer l'erreur pour chaque valeur de epsilon
+
+# Ajout des légendes et des titres
+plt.xlabel('r')  # Nom de l'abscisse
+plt.ylabel('$e_r$')  # Nom de l'ordonnée
+plt.title("Évolution de l'erreur en fonction des rounds pour différents niveaux de dissimilarité (ε)")
+plt.legend(title="Niveau de dissimilarité (ε)")
+plt.grid(True)
+
+title_fig = 'S3_epsilon_variation_FedAvg' if FL_solver == 0 else 'S3_epsilon_variation_FedLin'
+
+# Sauvegarde de l'image avec le titre dynamique
+plt.savefig(f"{title_fig}.png", dpi=300, bbox_inches='tight')
+plt.close()  # Ferme la figure pour libérer la mémoire
+
+print(f"S3 finie \n")
+#===================================================================================
+
+
+print(f"FIN")
 
 # # Illustrating the numerical results
 # title_fig = 'FedAvg' if FL_solver == 0 else 'FedLin'
@@ -127,7 +200,12 @@ plt.close()  # Ferme la figure pour libérer la mémoire
 # # Error vs number of global iterations - varying M
 # plt.figure(1)
 # for i, m in enumerate(M):
-#     plt.plot(range(1, R + 1), S1[i, :], label=f'M={m}', linewidth=1.2)
+#     plt.plot(range(R), S1[i, :], label=f'M={m}', linewidth=1.2)
+
+
+
+
+
 # plt.legend()
 # plt.xlabel('r')
 # plt.ylabel('$e_r$')
@@ -138,7 +216,7 @@ plt.close()  # Ferme la figure pour libérer la mémoire
 # # Error vs number of global iterations - varying N
 # plt.figure(2)
 # for i, n in enumerate(N):
-#     plt.plot(range(1, R + 1), S2[i, :], label=f'N={n}', linewidth=1.2)
+#     plt.plot(range(R), S2[i, :], label=f'N={n}', linewidth=1.2)
 # plt.legend()
 # plt.xlabel('r')
 # plt.ylabel('$e_r$')
@@ -149,10 +227,42 @@ plt.close()  # Ferme la figure pour libérer la mémoire
 # # Error vs number of global iterations - varying epsilon
 # plt.figure(3)
 # for i, e in enumerate(epsilon):
-#     plt.plot(range(1, R + 1), S3[i, :], label=f'epsilon={e}', linewidth=1.2)
+#     plt.plot(range(R), S3[i, :], label=f'epsilon={e}', linewidth=1.2)
 # plt.legend()
 # plt.xlabel('r')
 # plt.ylabel('$e_r$')
 # plt.title(title_fig)
 # plt.grid()
 # plt.show()
+
+
+# # Illustrating the numerical results
+# title_fig = 'FedAvg' if FL_solver == 0 else 'FedLin'
+
+# # Création de la figure unique
+# plt.figure()
+
+# # Error vs number of global iterations - varying M
+# for i, m in enumerate(M):
+#     plt.plot(range(R), S1[i, :], label=f'M={m}', linewidth=1.2)
+
+# # Error vs number of global iterations - varying N
+# for i, n in enumerate(N):
+#     plt.plot(range(R), S2[i, :], label=f'N={n}', linewidth=1.2)
+
+# # Error vs number of global iterations - varying epsilon (ε)
+# for i, e in enumerate(epsilon):
+#     plt.plot(range(R), S3[i, :], label=f'ε={e}', linewidth=1.2)
+
+# # Ajouter les légendes, les labels et le titre
+# plt.legend()
+# plt.xlabel('r')
+# plt.ylabel('$e_r$')
+# plt.title(title_fig)
+# plt.grid()
+
+# # Enregistrer la figure
+# plt.savefig(f'{title_fig}.png')  # Enregistrement de la figure sous un seul fichier
+# plt.close()  # Fermeture de la figure pour éviter l'affichage
+
+
