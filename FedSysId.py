@@ -7,7 +7,7 @@ from sysid import sysid
 
 
 # Selecting the FL_solver: Fed_Avg (FL_solver = 0) and Fed_Lin (FL_solver = 1)
-FL_solver = 1
+FL_solver = 2
 
 
 # System Data:
@@ -105,7 +105,12 @@ plt.title("Évolution de l'erreur en fonction des rounds pour différents nombre
 plt.legend(title="Nombre de clients")
 plt.grid(True)
 
-title_fig = 'S1_M_variation_FedAvg' if FL_solver == 0 else 'S1_M_variation_FedLin'
+if FL_solver == 0:
+    title_fig = 'S1_M_variation_FedAvg'
+elif FL_solver == 1:
+    title_fig = 'S1_M_variation_FedLin'
+elif FL_solver == 2:
+    title_fig = 'S1_M_variation_FedProx'
 
 # Sauvegarde de l'image avec le titre dynamique
 plt.savefig(f"{title_fig}.png", dpi=300, bbox_inches='tight')
@@ -141,7 +146,13 @@ plt.title("Évolution de l'erreur en fonction des rounds pour différents nombre
 plt.legend(title="Nombre de rollouts")
 plt.grid(True)
 
-title_fig = 'S2_N_variation_FedAvg' if FL_solver == 0 else 'S2_N_variation_FedLin'
+if FL_solver == 0:
+    title_fig = 'S2_N_variation_FedAvg'
+elif FL_solver == 1:
+    title_fig = 'S2_N_variation_FedLin'
+elif FL_solver == 2:
+    title_fig = 'S2_N_variation_FedProx'
+
 
 # Sauvegarde de l'image avec le titre dynamique
 plt.savefig(f"{title_fig}.png", dpi=300, bbox_inches='tight')
@@ -182,8 +193,12 @@ plt.title("Évolution de l'erreur en fonction des rounds pour différents niveau
 plt.legend(title="Niveau de dissimilarité (ε)")
 plt.grid(True)
 
-title_fig = 'S3_epsilon_variation_FedAvg' if FL_solver == 0 else 'S3_epsilon_variation_FedLin'
-
+if FL_solver == 0:
+    title_fig = 'S3_epsilon_variation_FedAvg'
+elif FL_solver == 1:
+    title_fig = 'S3_epsilon_variation_FedLin'
+elif FL_solver == 2:
+    title_fig = 'S3_epsilon_variation_FedProx'
 # Sauvegarde de l'image avec le titre dynamique
 plt.savefig(f"{title_fig}.png", dpi=300, bbox_inches='tight')
 plt.close()  # Ferme la figure pour libérer la mémoire

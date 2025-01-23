@@ -21,6 +21,7 @@ def sysid(A, B, T, N, M, R, sigu, sigx, sigw, FL_solver, s, true_theta=None):
     Theta_0 = np.hstack([(1/2) * A[s], (1/2) * B[s]])
     alpha = 1e-4  # pas d'apprentissage
     K = 10  # nombre d'itérations locales
+    mu = 2
 
     Theta_s = Theta_0.copy()  # serveur
     Theta_c = [None] * M  # clients
@@ -48,6 +49,12 @@ def sysid(A, B, T, N, M, R, sigu, sigx, sigw, FL_solver, s, true_theta=None):
                 # FedAvg
                 for k in range(1, K + 1):
                     new_val = Theta_c[i] + (alpha / k) * ((X[i] - Theta_c[i] @ Z[i]) @ Z[i].T)
+                    Theta_c[i] = new_val
+            
+            if FL_solver == 2:
+                # FedAvg
+                for k in range(1, K + 1):
+                    new_val = Theta_c[i] + (alpha / k)*(((X[i] - Theta_c[i] @ Z[i]) @ Z[i].T) - mu*(Theta_c[i] - Theta_s))
                     Theta_c[i] = new_val
 
         # Côté serveur :
