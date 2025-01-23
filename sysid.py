@@ -21,7 +21,7 @@ def sysid(A, B, T, N, M, R, sigu, sigx, sigw, FL_solver, s, true_theta=None):
     Theta_0 = np.hstack([(1/2) * A[s], (1/2) * B[s]])
     alpha = 1e-4  # pas d'apprentissage
     K = 10  # nombre d'itérations locales
-    mu = 2
+    mu = 2.5
 
     Theta_s = Theta_0.copy()  # serveur
     Theta_c = [None] * M  # clients
