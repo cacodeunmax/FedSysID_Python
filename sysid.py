@@ -52,7 +52,7 @@ def sysid(A, B, T, N, M, R, sigu, sigx, sigw, FL_solver, s, true_theta=None):
                     Theta_c[i] = new_val
             
             if FL_solver == 2:
-                # FedAvg
+                # FedProx
                 for k in range(1, K + 1):
                     new_val = Theta_c[i] + (alpha / k)*(((X[i] - Theta_c[i] @ Z[i]) @ Z[i].T) - mu*(Theta_c[i] - Theta_s))
                     Theta_c[i] = new_val
