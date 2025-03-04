@@ -48,7 +48,7 @@ s = 0  # Fixed system for the error computation
 
 
 
-M = 100
+M = 50
 N = 25  # Fixed number of rollouts
 epsilon = 0.01  # Fixed dissimilarity
 
@@ -105,7 +105,7 @@ for i in range(len(FL_solver_list)):
 # Ajouter les labels et le titre pour le deuxième graphique
 ax[1].set_xlabel('Round (r)', fontsize=12)
 ax[1].set_ylabel('Cumulative Time (seconds)', fontsize=12)
-ax[1].set_title('Cumulative Time for Different FL Solvers', fontsize=14)
+# ax[1].set_title('Cumulative Time for Different FL Solvers', fontsize=14)
 ax[1].grid(True)
 
 # Ajouter la légende
@@ -145,3 +145,28 @@ ax[1].grid(True)
 # Enregistrer l'image sous le nom 'S4_mean_total_round.png'
 plt.tight_layout()  # Ajuster l'espacement entre les graphes
 plt.savefig('S4_mean_total_round.png', format='png')
+
+
+
+######
+
+
+
+plt.figure(figsize=(10, 6))
+
+# Plot cumulative times for each solver
+for i in range(len(FL_solver_list)):
+    solver_name = FL_solver_list_names[i] if i < len(FL_solver_list_names) else f"FL_solver {i}"
+    plt.plot(range(R), cumulative_times[i, :], label=solver_name)
+
+# Add labels and title
+plt.xlabel('Round (r)', fontsize=12)
+plt.ylabel('Cumulative Time (seconds)', fontsize=12)
+# plt.title('Cumulative Time for Different FL Solvers', fontsize=14)
+plt.grid(True)
+plt.legend()
+
+# Save the plot as an image
+plt.tight_layout()
+plt.savefig('S4_cumulative_time_per_round.png', format='png')
+plt.show()
