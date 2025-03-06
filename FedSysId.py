@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
 from sysgen import sysgen
 from sysid import sysid
 
