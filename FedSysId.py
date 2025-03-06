@@ -6,7 +6,7 @@ from sysid import sysid
 
 
 
-# Selecting the FL_solver: Fed_Avg (FL_solver = 0) and Fed_Lin (FL_solver = 1)
+# Selecting the FL_solver: Fed_Avg (FL_solver = 0), Fed_Lin (FL_solver = 1), Fed_Prox (FL_solver = 2)
 FL_solver = 1
 
 
